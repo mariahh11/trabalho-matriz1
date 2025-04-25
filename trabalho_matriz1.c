@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 int main(){
     int m, n;
     int opcao;
@@ -16,7 +17,7 @@ int main(){
     int matriz[m][n];
     for (int i = 0; i < m; i++){
         for (int j = 0; j < n; j++){
-            matriz[i][j] = 1;
+            matriz[i][j] = 0;
         }
     }
 
@@ -49,16 +50,31 @@ int main(){
             break;
         }
 
-        case 2:
+        case 2:{
+            int indice;
+            printf("Vamos inserir dados em um conjunto!\n");
+            printf("Atenção! Você não pode inserir mais de %d números, esses números não podem ser repetidos.\n", n);
+            printf("Dê o índice do conjunto que você deseja alterar: ");
+            scanf("%d", &indice);
+
+            if (indice < 0 || indice > m){
+                printf("ERRO - Esse índice não existe. Digite um índice válido.");
+            }
+
+            for (int i = 0; i < n; i++){
+                printf("Valor %d: ", i);
+                scanf("%d", &matriz[indice][i]);
+            }
+        }
+
+        case 9:
+            printf("Saindo do programa...\n");
 
         default:
             //Caso o usuário digite uma opção inválida - mensagem de erro
             printf("ERRO - Opção inválida. Tente novamente.\n");
     }
     } while (opcao != 9);
-
-
-
 
     //Imprimir a matriz final, usando pra testar o código.
     for (int i = 0; i < m; i++){

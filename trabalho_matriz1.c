@@ -1,5 +1,15 @@
 #include <stdio.h>
 
+int numero_ja_existe(int m, int n, int matriz[m][n], int linha_escolhida, int num){
+    for (int i = 0; i < n; i++){
+        if (matriz[linha_escolhida][i] == num){
+            return 1; //Número já existe
+        }
+    }
+
+    return 0; //Número válido
+}
+
 
 int main(){
     int m, n;
@@ -52,23 +62,35 @@ int main(){
 
         case 2:{
             int indice;
+            int novo_valor;
             printf("Vamos inserir dados em um conjunto!\n");
             printf("Atenção! Você não pode inserir mais de %d números, esses números não podem ser repetidos.\n", n);
             printf("Dê o índice do conjunto que você deseja alterar: ");
             scanf("%d", &indice);
 
-            if (indice < 0 || indice > m){
+            if (indice < 0 || indice >= m){
                 printf("ERRO - Esse índice não existe. Digite um índice válido.");
             }
 
             for (int i = 0; i < n; i++){
+               do {
                 printf("Valor %d: ", i);
-                scanf("%d", &matriz[indice][i]);
-            }
-        }
+                scanf("%d", &novo_valor);
+
+                if (numero_ja_existe(m, n, matriz, indice, novo_valor)){
+                    printf("ERRO - Esse número já existe, selecione outro!\n");
+                }else{
+                    matriz[indice][i] = novo_valor;
+                    break;
+                }
+               } while(1);
+        }  
+        break;
+    }
 
         case 9:
             printf("Saindo do programa...\n");
+            break; 
 
         default:
             //Caso o usuário digite uma opção inválida - mensagem de erro

@@ -76,15 +76,15 @@ void backToMenu()
 }
 
 // Escaneia os valores atribuidos a matriz
-void scanMatrix(int m, int n, int matrix[MAX][MAX])
-{
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) {
-            printf("Item [%d][%d]: ", i, j);
-            scanf("%d", &matrix[i][j]);
-        }
-    }
-}
+//void scanMatrix(int m, int n, int matrix[MAX][MAX])
+//{
+//    for (int i = 0; i < m; i++) {
+//        for (int j = 0; j < n; j++) {
+//            printf("Item [%d][%d]: ", i, j);
+//            scanf("%d", &matrix[i][j]);
+//        }
+//    }
+//}
 
 void preState(
     int m, 
@@ -94,7 +94,7 @@ void preState(
     int *indexTwo,
     int option) 
 {        
-    scanMatrix(m, n, matrix);
+    //scanMatrix(m, n, matrix);
 
     char *type = (option == 4) ? "união" : "interseção";
 
@@ -289,56 +289,112 @@ int main()
         }
 
         case 5:
-        {
-            int indexOne, indexTwo;
-
-            preState(m, n, matriz, &indexOne, &indexTwo, 5);
-
-            int concat[n], k = 0, newMatrix[MAX][MAX];
-        
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    newMatrix[i][j] = matriz[i][j];
-                }
-            }
-        
-            // interseção entre as duas linhas
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    int matrixLine = matriz[indexOne][i];
-                    if ( matrixLine == matriz[indexTwo][j] && matrixLine != 0) {
-                        int alreadyExists = 0;
-                        for (int x = 0; x < k; x++) {
-                            if (concat[x] == matrixLine) {
-                                alreadyExists = 1;
-                                break;
-                            }
-                        }
-                        if (!alreadyExists) {
-                            concat[k++] = matrixLine;
-                        }
-                    }
-                }
-            }
-        
-            for (int i = 0; i < n; i++) {
-                if (i < k) {
-                    newMatrix[m][i] = concat[i];
-                } else {
-                    newMatrix[m][i] = 0;
-                }
-            }
-        
-            // imprime a nova matriz
-            for (int i = 0; i < m + 1; i++) {
-                for (int j = 0; j < n; j++) {
-                    printf("%d ", newMatrix[i][j]);
-                }
-                printf("\n");
-            }
+    {
+        int indexOne, indexTwo;
+    
+        if (count < 2) {
+            printf("ERRO - É necessário ao menos dois conjuntos para realizar a interseção.\n");
             backToMenu();
             break;
         }
+    
+        preState(m, n, matriz, &indexOne, &indexTwo, 5);
+    
+        int interseccao[n], k = 0;
+    
+        for (int i = 0; i < n; i++) {
+            int elemento = matriz[indexOne][i];
+        
+            for (int j = 0; j < n; j++) {
+                if (elemento == matriz[indexTwo][j] && elemento != 0) {
+                    // Verifica se já foi adicionado à interseção
+                    int repetido = 0;
+                    for (int x = 0; x < k; x++) {
+                        if (interseccao[x] == elemento) {
+                            repetido = 1;
+                            break;
+                        }
+                    }
+                
+                    if (!repetido) {
+                        interseccao[k++] = elemento;
+                    }
+                
+                    break; // Elemento encontrado, não precisa continuar buscando
+                }
+            }
+        }
+    
+        // Verifica se há espaço na matriz
+        if (count >= m) {
+            printf("ERRO - Limite de conjuntos atingido, não é possível adicionar a interseção.\n");
+            backToMenu();
+            break;
+        }
+    
+        // Adiciona interseção como novo conjunto
+        for (int i = 0; i < n; i++) {
+            matriz[count][i] = (i < k) ? interseccao[i] : 0;
+        }
+    
+        printf("Interseção adicionada como conjunto %d.\n", count);
+        count++;
+    
+        backToMenu();
+        break;
+    }
+
+        //case 5:
+        //{
+        //    int indexOne, indexTwo;
+//
+        //    preState(m, n, matriz, &indexOne, &indexTwo, 5);
+//
+        //    int concat[n], k = 0, newMatrix[MAX][MAX];
+        //
+        //    //for (int i = 0; i < m; i++) {
+        //    //    for (int j = 0; j < n; j++) {
+        //    //        newMatrix[i][j] = matriz[i][j];
+        //    //    }
+        //    //}
+        //
+        //    // interseção entre as duas linhas
+        //    for (int i = 0; i < n; i++) {
+        //        for (int j = 0; j < n; j++) {
+        //            int matrixLine = matriz[indexOne][i];
+        //            if ( matrixLine == matriz[indexTwo][j] && matrixLine != 0) {
+        //                int alreadyExists = 0;
+        //                for (int x = 0; x < k; x++) {
+        //                    if (concat[x] == matrixLine) {
+        //                        alreadyExists = 1;
+        //                        break;
+        //                    }
+        //                }
+        //                if (!alreadyExists) {
+        //                    concat[k++] = matrixLine;
+        //                }
+        //            }
+        //        }
+        //    }
+        //
+        //    for (int i = 0; i < n; i++) {
+        //        if (i < k) {
+        //            newMatrix[m][i] = concat[i];
+        //        } else {
+        //            newMatrix[m][i] = 0;
+        //        }
+        //    }
+        //
+        //    // imprime a nova matriz
+        //    for (int i = 0; i < m + 1; i++) {
+        //        for (int j = 0; j < n; j++) {
+        //            printf("%d ", newMatrix[i][j]);
+        //        }
+        //        printf("\n");
+        //    }
+        //    backToMenu();
+        //    break;
+        //}
 
         case 6:
         {

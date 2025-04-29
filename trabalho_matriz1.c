@@ -2,10 +2,6 @@
 #include <locale.h>
 #define MAX 100
 
-void enable_accents(void) {
-    setlocale(LC_ALL, "");
-}
-
 // Verifica se o número já existe no CONJUNTO
 int numberAlreadyExistsInIndex(int m, int n, int matriz[m][n], int linha_escolhida, int num)
 {
@@ -114,7 +110,7 @@ void preState(
 
 int main()
 {
-    //enable_accents();
+
     int m, n;
     int opcao;
     int count = 0;

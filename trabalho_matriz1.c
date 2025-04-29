@@ -123,8 +123,8 @@ int main()
     scanf("%d", &n);
 
     // Todos os elementos da matriz são 0
-    int matriz[MAX][MAX];
-    resetMatrix(MAX, MAX, matriz, -1);
+    int matriz[m][n];
+    resetMatrix(m, n, matriz, -1);
 
     // Loop do menu
     do {

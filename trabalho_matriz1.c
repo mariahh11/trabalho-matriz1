@@ -185,12 +185,16 @@ int main()
                 do {
                     printf("Elemento %d: ", j);
                     scanf("%d", &novo_valor);
-                    if (numberAlreadyExistsInIndex(m, n, matriz, indice, novo_valor)) {
-                        printf("ERRO - Valor repetido!\n");
-                    }
-                    else {
-                        matriz[indice][j] = novo_valor;
-                        break;
+                    if (novo_valor == 0){
+                        printf("ERRO - 0 não é um valor válido!\n");
+                    }else{
+                        if (numberAlreadyExistsInIndex(m, n, matriz, indice, novo_valor)) {
+                            printf("ERRO - Valor repetido!\n");
+                        }
+                        else {
+                            matriz[indice][j] = novo_valor;
+                            break;
+                        }
                     }
                 } while (1);
             }

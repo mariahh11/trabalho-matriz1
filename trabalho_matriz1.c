@@ -58,12 +58,12 @@ void resetMatrix(int m, int n, int matriz[m][n], int linha)
     }
 }
 
-int searchGroup(int m, int n, int matriz[m][n], int indices[], int chave)
+int searchGroup(int m, int n, int matriz[m][n], int indexs[], int chave)
 {
     int count = 0;
     for (int i = 0; i < m; i++) {
         if (numberAlreadyExistsInIndex(m, n, matriz, i, chave)) {
-            indices[count++] = i;
+            indexs[count++] = i;
         }
     }
 
@@ -81,10 +81,14 @@ void preState(
     int *indexTwo,
     int option) 
 {        
-    char *type = (option == 4) ? "união" : "interseção";
+    char *type = (option == 4) ? "união" : "interseção"; //Muda de acordo com o case escolhido. Se for o 4, irá aparecer união ao invés de intersecção
 
     printf("Escolha dois índices para fazer a %s: \n", type);
-    scanf("%d%d", indexOne, indexTwo);
+    printf("Primeiro índice: ");
+    scanf("%d", indexOne);
+    printf("Segundo índice: ");
+    scanf("%d", indexTwo);
+    //scanf("%d%d", indexOne, indexTwo);
     printf("\n");
 
     while ((*indexOne < 0 || *indexTwo < 0) || (*indexOne >= m || *indexTwo >= m)) {
@@ -96,15 +100,37 @@ void preState(
 void canNotBeNullMatrix(int count, int m)
 {
     if (count < 2) {
-        printf("ERRO - É necessário ao menos dois conjuntos para realizar a interseção.\n");
+        printf("ERRO - É necessário ao menos dois conjuntos para realizar a ação.\n");
+        backToMenu();
+        return;
     } 
 
     if (count >= m) {
-        printf("ERRO - Limite de conjuntos atingido.\n");
+        printf("AVISO - Nesse caso será possível passar o máximo de linhas, pois será inserido um conjunto necessário na matriz\n");
+    }
+}
+
+
+void showMatrixWithZeros(int count, int n, int matriz[MAX][MAX])//Função que mostra a matriz alterada pelo case 4
+{
+    int totalColunas = n * 2;
+
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < totalColunas; j++) {
+            if (j < n) {
+                printf("%d ", matriz[i][j]);
+            } else {
+                printf("0 ");
+            }
+        }
+        printf("\n");
     }
 
-    backToMenu();
-    return;
+    // Imprime a última linha (união), com todas as colunas preenchidas
+    for (int j = 0; j < totalColunas; j++) {
+        printf("%d ", matriz[count][j]);
+    }
+    printf("\n");
 }
 
 int main()
@@ -113,6 +139,11 @@ int main()
     int m, n;
     int opcao;
     int count = 0;
+    int houveUniao = 0;
+
+    //Introdução do programa para o usuário
+    printf("★Bem vindo!★\n");
+    printf("Nesse programa, poderemos fazer operações com uma matriz. Basta digitar o número correspondente da operação desejada.\n");
 
     // Leitura da matriz
     printf("Primeiro, precisamos da quantidade de linhas e colunas da matriz.\n");
@@ -120,6 +151,8 @@ int main()
     scanf("%d", &m);
     printf("Colunas: ");
     scanf("%d", &n);
+
+    printf("\nDICA - Adicione os conjuntos vazios antes de começar as operações!\n");
 
     // Todos os elementos da matriz são 0
     int matriz[m][n];
@@ -147,10 +180,10 @@ int main()
         switch (opcao) {
         case 1:
         {
-            if (count >= m) {
+            if (count >= m) {//Se o count passar da quantidade de linhas, ele impede que sejam adicionados mais conjuntos
                 printf("ERRO - Limite de conjuntos atingido.\n");
             }
-            else {
+            else {//Caso não passe, ele adiciona mais um conjunto vazio na matriz
                 count++;
                 printf("Conjunto vazio criado no índice %d.\n", count - 1);
             }
@@ -160,10 +193,10 @@ int main()
 
         case 2:
         {
-            int indice;
+            int index;
             int novo_valor;
 
-            if (count == 0) {
+            if (count == 0) {//Se o count for igual a zero, significa que não existe nenhum conjunto na matriz para ser alterado
                 printf("ERRO - Nenhum conjunto criado ainda.\n");
                 backToMenu();
                 break;
@@ -172,9 +205,9 @@ int main()
             printf("Vamos inserir dados em um conjunto!\n");
             printf("Atenção! Você não pode inserir mais de %d números, esses números não podem ser repetidos.\n", n);
             printf("Dê o índice do conjunto que você deseja alterar: ");
-            scanf("%d", &indice);
+            scanf("%d", &index);
 
-            if (indice < 0 || indice >= count) {
+            if (index < 0 || index >= count) {//Essa parte não deixa que o usuário selecione um índice que não existe
                 printf("ERRO - Esse índice não existe. Digite um índice válido.");
                 backToMenu();
                 break;
@@ -185,13 +218,13 @@ int main()
                     printf("Elemento %d: ", j);
                     scanf("%d", &novo_valor);
                     if (novo_valor == 0){
-                        printf("ERRO - 0 não é um valor válido!\n");
+                        printf("ERRO - 0 não é um valor válido!\n");//Não é possível adicionar 0 como valor
                     }else{
-                        if (numberAlreadyExistsInIndex(m, n, matriz, indice, novo_valor)) {
-                            printf("ERRO - Valor repetido!\n");
+                        if (numberAlreadyExistsInIndex(m, n, matriz, index, novo_valor)) {//Chama a função que verifica se um número já existe no conjunto
+                            printf("ERRO - Valor repetido!\n");//Não é possível adicionar um número que já existe
                         }
                         else {
-                            matriz[indice][j] = novo_valor;
+                            matriz[index][j] = novo_valor;//Adiciona os valores digitados na matriz
                             break;
                         }
                     }
@@ -204,31 +237,28 @@ int main()
 
         case 3:
         {
-            int indice;
-            if (count == 0) {
+            int index;
+            if (count == 0) {//Não é possível remover conjuntos que não existem
                 printf("ERRO - Nenhum conjunto para remover\n");
                 backToMenu();
                 break;
             }
             printf("Vamos remover um conjunto!\n");
             printf("Qual conjunto você deseja remover?\nConjunto: ");
-            scanf("%d", &indice);
+            scanf("%d", &index);
 
-            if (indice < 0 || indice >= count) {
+            if (index < 0 || index >= count) {//Não é possível selecionar conjuntos que não existem
                 printf("ERRO - Índice inválido.\n");
             }
             else {
-                for (int j = 0; j < n; j++) {
-                    matriz[indice][j] = 0;
-                }
-                for (int i = indice; i < count - 1; i++) {
+                for (int i = index; i < count - 1; i++) {//Move o conjunto abaixo para cima
                     for (int j = 0; j < n; j++) {
                         matriz[i][j] = matriz[i + 1][j];
                     }
                 }
-                resetMatrix(m, n, matriz, count - 1);
-                count--;
-                printf("Conjunto %d removido.\n", indice);
+                resetMatrix(m, n, matriz, count - 1); //Zera o conjunto selecionado
+                count--;//Diminui o contador pois um conjunto foi removido
+                printf("Conjunto %d removido.\n", index);
             }
             backToMenu();
             break;
@@ -285,29 +315,14 @@ int main()
               }
             }
 
-            // imprime a nova matriz
-            printf("\nmatriz principa (print teste, vai ser removido)\n");
-            for (int i = 0; i < m + 1; i++) {
-                for (int j = 0; j < n * 2; j++) {
-                    if (i < m) {
-                        if (j < n) {
-                            printf("%d ", matriz[i][j]);
-                        }
-                        else {
-                            printf("0 ");
-                        }
-                    } else {
-                        printf("%d ", matriz[i][j]);
-                    }
-                }
-                printf("\n");
-            }
+            houveUniao = 1;
             backToMenu();
             break;
         }
-
+        
         case 5:
         {   
+            printf("Vamos fazer a intersecção entre ");
             int indexOne, indexTwo;
             canNotBeNullMatrix(count, m);
             preState(m, &indexOne, &indexTwo, 5);
@@ -348,9 +363,9 @@ int main()
 
         case 6:
         {
-            int indice;
+            int index;
 
-            if (count == 0) {
+            if (count == 0) {//Se count == 0, nenhum conjunto foi criado e volta para o menu
                 printf("ERRO - Nenhum conjunto criado.\n");
                 backToMenu();
                 break;
@@ -358,9 +373,9 @@ int main()
 
             printf("Vamos mostar um conjunto!\n");
             printf("Por favor, informe o índice do conjunto que você deseja mostrar: ");
-            scanf("%d", &indice);
+            scanf("%d", &index);
 
-            showMatrix(m, n, matriz, indice, count);
+            showMatrix(m, n, matriz, index, count);//Chama a função que mostra o conjunto
             backToMenu();
             break;
         }
@@ -368,8 +383,13 @@ int main()
         case 7:
             printf("Vamos mostrar todos os conjuntos!\n");
             printf("Imprimindo conjuntos...\n");
-            showMatrix(m, n, matriz, -1, count);
-
+    
+            if (houveUniao) {//Se houve união for verdadeiro, indica que ele passou pelo case 4 antes. Então ele vai chamar a função que imprime a matriz alterada
+                showMatrixWithZeros(count + 1, n * 2, matriz);
+            } else {//Se não, ele vai chamar a função de mostrar a matriz[m][n]
+                showMatrix(m, n, matriz, -1, count);
+            }   
+    
             backToMenu();
             break;
 
@@ -380,17 +400,17 @@ int main()
             printf("Digite o valor a ser procurado: ");
             scanf("%d", &chave);
 
-            int indices[m];
-            int x = searchGroup(m, n, matriz, indices, chave);
+            int indexs[m];
+            int x = searchGroup(m, n, matriz, indexs, chave); //A variável x da a quantidade de vezes que existem números repetidos
 
-            if (x == 0) {
+            if (x == 0) {//Se x == 0, o valor não foi encontrado
                 printf("\nO valor %d não foi encontrado em nenhum conjunto.\n", chave);
             }
-            else {
+            else {//Se for mais de zero, o programa imprime os indexs onde o valor foi encontrado
                 printf("Valor encontrado!\n");
                 printf("Imprimindo o(s) índice(s) onde o valor %d foi encontrados...\n", chave);
                 for (int k = 0; k < x; k++) {
-                    printf("%d ", indices[k]);
+                    printf("%d ", indexs[k]);
                     if (k < (x - 1)) {
                         printf(", ");
                     }
@@ -408,11 +428,7 @@ int main()
             // Caso o usuário digite uma opção inválida - mensagem de erro
             printf("ERRO - Opção inválida. Tente novamente.\n");
         }
-    } while (opcao != 9);
-
-    // Imprimir a matriz final, usando pra testar o código.
-    showMatrix(m, n, matriz, -1, count);
-    printf("Count: %d", count);
+    } while (opcao != 9);//Só sai do loop se o usuário selecionar a opção 9 (sair do programa)
 
     return 0;
 }

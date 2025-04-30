@@ -93,7 +93,7 @@ void preState(
     }
 }
 
-void canNotBeNullMatrix(int count)
+void canNotBeNullMatrix(int count, int m)
 {
     if (count < 2) {
         printf("ERRO - É necessário ao menos dois conjuntos para realizar a interseção.\n");
@@ -104,7 +104,7 @@ void canNotBeNullMatrix(int count)
     }
 
     backToMenu();
-    break;
+    return;
 }
 
 int main()
@@ -238,7 +238,7 @@ int main()
         {
            int indexOne, indexTwo;
 
-           canNotBeNullMatrix(count);
+           canNotBeNullMatrix(count, m);
 
            preState(m, &indexOne, &indexTwo, 4);
            
@@ -309,7 +309,7 @@ int main()
         case 5:
         {   
             int indexOne, indexTwo;
-            canNotBeNullMatrix(count);
+            canNotBeNullMatrix(count, m);
             preState(m, &indexOne, &indexTwo, 5);
             
             int intersec[n], k = 0;

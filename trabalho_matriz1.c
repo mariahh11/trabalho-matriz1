@@ -1,3 +1,4 @@
+//ALUNOS: MARIA EDUARDA NUNES GEROTTI E MARIAH GARCIA
 #include <stdio.h>
 #include <locale.h>
 #define MAX 100
@@ -58,12 +59,12 @@ void resetMatrix(int m, int n, int matriz[m][n], int linha)
     }
 }
 
-int searchGroup(int m, int n, int matriz[m][n], int indexs[], int chave)
+int searchGroup(int m, int n, int matriz[m][n], int indexes[], int chave)
 {
     int count = 0;
     for (int i = 0; i < m; i++) {
         if (numberAlreadyExistsInIndex(m, n, matriz, i, chave)) {
-            indexs[count++] = i;
+            indexes[count++] = i;
         }
     }
 
@@ -400,17 +401,17 @@ int main()
             printf("Digite o valor a ser procurado: ");
             scanf("%d", &chave);
 
-            int indexs[m];
-            int x = searchGroup(m, n, matriz, indexs, chave); //A variável x da a quantidade de vezes que existem números repetidos
+            int indexes[m];
+            int x = searchGroup(m, n, matriz, indexes, chave); //A variável x da a quantidade de vezes que existem números repetidos
 
             if (x == 0) {//Se x == 0, o valor não foi encontrado
                 printf("\nO valor %d não foi encontrado em nenhum conjunto.\n", chave);
             }
-            else {//Se for mais de zero, o programa imprime os indexs onde o valor foi encontrado
+            else {//Se for mais de zero, o programa imprime os indices onde o valor foi encontrado
                 printf("Valor encontrado!\n");
                 printf("Imprimindo o(s) índice(s) onde o valor %d foi encontrados...\n", chave);
                 for (int k = 0; k < x; k++) {
-                    printf("%d ", indexs[k]);
+                    printf("%d ", indexes[k]);
                     if (k < (x - 1)) {
                         printf(", ");
                     }
